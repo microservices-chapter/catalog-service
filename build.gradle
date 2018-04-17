@@ -1,0 +1,54 @@
+group 'catalog-service'
+version '1.0-SNAPSHOT'
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.6.RELEASE")
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+
+dependencyManagement {
+  imports {
+    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.RELEASE'
+  }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile ('org.springframework.boot:spring-boot-starter-web') {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+  }
+  compile ('org.springframework.boot:spring-boot-starter-actuator') {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+  }
+  compile ('org.springframework.boot:spring-boot-starter-data-mongodb') {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+  }
+  compile ('org.springframework.cloud:spring-cloud-starter-config') {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+  }
+  compile 'org.springframework.boot:spring-boot-starter-log4j2'
+
+  compile 'com.google.guava:guava:24.1-jre'
+
+  testCompile 'junit:junit:4.12'
+}
+
+test {
+  testLogging {
+    events "passed", "skipped", "failed"
+    exceptionFormat "full"
+  }
+}

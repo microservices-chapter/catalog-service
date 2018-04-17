@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30">
+  <!--TODO: to yaml; and move to config repo-->
+  <Properties>
+    <Property name="logPattern">
+      %d{yyyy-MM-dd HH:mm:ss.SSS} InventoryService %5p [%X{CORRELATION-ID}] %-30.30c{1.} : %m%n%ex
+    </Property>
+    <Property name="logPath">
+      logs
+    </Property>
+  </Properties>
+  <Appenders>
+    <Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true">
+      <PatternLayout pattern="${logPattern}"/>
+    </Console>
+    <RollingFile name="FileAppender" fileName="${logPath}/inventory-service.log" filePattern="${logPath}/inventory-service-%d{yyyy-MM-dd}-%i.log">
+      <PatternLayout>
+        <Pattern>${logPattern}</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="10MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+    </RollingFile>
+    <!--<Socket name="Logstash" host="logstash" port="7000">-->
+      <!--<SerializedLayout />-->
+    <!--</Socket>-->
+    <Socket name="Logstash" host="localhost" port="9998">
+      <JsonLayout properties="true"/>
+    </Socket>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.appian.microservices.catalog" level="debug" additivity="false">
+      <AppenderRef ref="ConsoleAppender" />
+      <AppenderRef ref="FileAppender"/>
+      <AppenderRef ref="Logstash"/>
+    </Logger>
+    <Root level="info">
+      <AppenderRef ref="ConsoleAppender" />
+    </Root>
+  </Loggers>
+</Configuration>
